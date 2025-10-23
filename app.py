@@ -107,7 +107,7 @@ class RAGChatbot:
                   f.write(uploaded_file.getbuffer())
 
             # 2️⃣ PDF / TXT 로더 (pypdf 폴백)
-             try:
+            try:
                   if uploaded_file.name.lower().endswith(".pdf"):
                      loader = PyPDFLoader(temp_file_path)
                      docs = loader.load()
