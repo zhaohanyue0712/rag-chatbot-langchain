@@ -114,7 +114,7 @@ class RAGChatbot:
                 else:
                     loader = TextLoader(temp_file_path, encoding="utf-8")
                     docs = loader.load()
-        except Exception:
+            except Exception:
                 reader = pypdf.PdfReader(temp_file_path)
                 text = "\n".join(page.extract_text() or "" for page in reader.pages)
                 docs = [Document(page_content=text, metadata={"source": uploaded_file.name})]
