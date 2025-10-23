@@ -107,14 +107,14 @@ class RAGChatbot:
                   f.write(uploaded_file.getbuffer())
 
             # 2️⃣ PDF / TXT 로더 (pypdf 폴백)
-              try:
-                  if uploaded_file.name.lower().endswith(".pdf"):
-                     loader = PyPDFLoader(temp_file_path)
-                     docs = loader.load()
-                  else:
+               try:
+                   if uploaded_file.name.lower().endswith(".pdf"):
+                      loader = PyPDFLoader(temp_file_path)
+                      docs = loader.load()
+                   else:
                      loader = TextLoader(temp_file_path, encoding="utf-8")
                      docs = loader.load()
-               except Exception:
+                except Exception:
                   reader = pypdf.PdfReader(temp_file_path)
                   text = "\n".join(page.extract_text() or "" for page in reader.pages)
                   docs = [Document(page_content=text, metadata={"source": uploaded_file.name})]
