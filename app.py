@@ -138,9 +138,9 @@ class RAGChatbot:
 
             # 5️⃣ Chroma 저장소 경로 생성 (/tmp 사용)
             chroma_path = os.path.join(tempfile.gettempdir(), "chroma_db")
-           if os.path.exists(chroma_path):
+             if os.path.exists(chroma_path):
                shutil.rmtree(chroma_path)
-           os.makedirs(chroma_path, exist_ok=True)
+             os.makedirs(chroma_path, exist_ok=True)
 
            # 6️⃣ 벡터 스토어 생성
            self.vectorstore = Chroma.from_documents(
