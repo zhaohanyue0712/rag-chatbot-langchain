@@ -119,7 +119,7 @@ class RAGChatbot:
                   text = "\n".join(page.extract_text() or "" for page in reader.pages)
                   docs = [Document(page_content=text, metadata={"source": uploaded_file.name})]
 
-              all_documents.extend(docs)
+            all_documents.extend(docs)
 
              # 3️⃣ 텍스트 분할
              if not all_documents:
