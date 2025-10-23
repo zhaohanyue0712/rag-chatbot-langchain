@@ -108,22 +108,22 @@ class RAGChatbot:
 
             # 2️⃣ PDF / TXT 로더 (pypdf 폴백)
              try:
-                 if uploaded_file.name.lower().endswith(".pdf"):
+                  if uploaded_file.name.lower().endswith(".pdf"):
                      loader = PyPDFLoader(temp_file_path)
                      docs = loader.load()
-                 else:
+                  else:
                      loader = TextLoader(temp_file_path, encoding="utf-8")
                      docs = loader.load()
-              except Exception:
+               except Exception:
                   reader = pypdf.PdfReader(temp_file_path)
                   text = "\n".join(page.extract_text() or "" for page in reader.pages)
                   docs = [Document(page_content=text, metadata={"source": uploaded_file.name})]
 
               all_documents.extend(docs)
 
-            # 3️⃣ 텍스트 분할
-            if not all_documents:
-                raise RuntimeError("❌ 업로드된 문서에서 텍스트를 추출하지 못했습니다.")
+             # 3️⃣ 텍스트 분할
+             if not all_documents:
+                 raise RuntimeError("❌ 업로드된 문서에서 텍스트를 추출하지 못했습니다.")
 
             text_splitter = RecursiveCharacterTextSplitter(
                 chunk_size=1000,
@@ -133,28 +133,28 @@ class RAGChatbot:
             self.documents = texts
 
             # 4️⃣ 임베딩 초기화
-         if not self.initialize_embeddings():
-            raise RuntimeError("❌ 임베딩 초기화 실패")
+            if not self.initialize_embeddings():
+              raise RuntimeError("❌ 임베딩 초기화 실패")
 
          # 5️⃣ Chroma 저장소 경로 생성 (/tmp 사용)
-         chroma_path = os.path.join(tempfile.gettempdir(), "chroma_db")
-         if os.path.exists(chroma_path):
-             shutil.rmtree(chroma_path)
-         os.makedirs(chroma_path, exist_ok=True)
+          chroma_path = os.path.join(tempfile.gettempdir(), "chroma_db")
+          if os.path.exists(chroma_path):
+              shutil.rmtree(chroma_path)
+          os.makedirs(chroma_path, exist_ok=True)
 
          # 6️⃣ 벡터 스토어 생성
-         self.vectorstore = Chroma.from_documents(
-             documents=texts,
-             embedding=self.embeddings,
-             persist_directory=chroma_path
+          self.vectorstore = Chroma.from_documents(
+              documents=texts,
+              embedding=self.embeddings,
+              persist_directory=chroma_path
          )
 
          # 7️⃣ 임시 폴더 정리
-         shutil.rmtree(temp_dir, ignore_errors=True)
+          shutil.rmtree(temp_dir, ignore_errors=True)
 
-         return self.vectorstore, len(texts)
+          return self.vectorstore, len(texts)
 
-      except Exception as e:
+       except Exception as e:
           logger.error(f"문서 로딩 실패: {e}")
           st.error(f"❌ 문서 로딩 중 오류가 발생했습니다: {str(e)}")
           return None, 0
