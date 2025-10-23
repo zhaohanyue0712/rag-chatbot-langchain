@@ -100,13 +100,13 @@ class RAGChatbot:
             temp_dir = tempfile.mkdtemp()
             all_documents = []
 
-        # 1️⃣ 업로드된 파일을 임시 폴더에 저장
-            for uploaded_file in uploaded_files:
-                temp_file_path = os.path.join(temp_dir, uploaded_file.name)
-                with open(temp_file_path, "wb") as f:
-                    f.write(uploaded_file.getbuffer())
+           # 1️⃣ 업로드된 파일을 임시 폴더에 저장
+           for uploaded_file in uploaded_files:
+               temp_file_path = os.path.join(temp_dir, uploaded_file.name)
+               with open(temp_file_path, "wb") as f:
+                  f.write(uploaded_file.getbuffer())
 
-            # 2️⃣ PDF / TXT 로더 (pypdf 폴백)
+             # 2️⃣ PDF / TXT 로더 (pypdf 폴백)
             try:
                 if uploaded_file.name.lower().endswith(".pdf"):
                     loader = PyPDFLoader(temp_file_path)
@@ -121,43 +121,43 @@ class RAGChatbot:
 
             all_documents.extend(docs)
 
-              # 3️⃣ 텍스트 분할
-        if not all_documents:
-            raise RuntimeError("❌ 업로드된 문서에서 텍스트를 추출하지 못했습니다.")
+           # 3️⃣ 텍스트 분할
+           if not all_documents:
+               raise RuntimeError("❌ 업로드된 문서에서 텍스트를 추출하지 못했습니다.")
 
-        text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=1000,
-            chunk_overlap=200
-        )
-        texts = text_splitter.split_documents(all_documents)
-        self.documents = texts
+           text_splitter = RecursiveCharacterTextSplitter(
+               chunk_size=1000,
+               chunk_overlap=200
+           )
+           texts = text_splitter.split_documents(all_documents)
+           self.documents = texts
 
-        # 4️⃣ 임베딩 초기화
-        if not self.initialize_embeddings():
+         # 4️⃣ 임베딩 초기화
+         if not self.initialize_embeddings():
             raise RuntimeError("❌ 임베딩 초기화 실패")
 
-        # 5️⃣ Chroma 저장소 경로 생성 (/tmp 사용)
-        chroma_path = os.path.join(tempfile.gettempdir(), "chroma_db")
-        if os.path.exists(chroma_path):
-            shutil.rmtree(chroma_path)
-        os.makedirs(chroma_path, exist_ok=True)
+         # 5️⃣ Chroma 저장소 경로 생성 (/tmp 사용)
+         chroma_path = os.path.join(tempfile.gettempdir(), "chroma_db")
+         if os.path.exists(chroma_path):
+             shutil.rmtree(chroma_path)
+         os.makedirs(chroma_path, exist_ok=True)
 
-        # 6️⃣ 벡터 스토어 생성
-        self.vectorstore = Chroma.from_documents(
-            documents=texts,
-            embedding=self.embeddings,
-            persist_directory=chroma_path
-        )
+         # 6️⃣ 벡터 스토어 생성
+         self.vectorstore = Chroma.from_documents(
+             documents=texts,
+             embedding=self.embeddings,
+             persist_directory=chroma_path
+         )
 
-        # 7️⃣ 임시 폴더 정리
-        shutil.rmtree(temp_dir, ignore_errors=True)
+         # 7️⃣ 임시 폴더 정리
+         shutil.rmtree(temp_dir, ignore_errors=True)
 
-        return self.vectorstore, len(texts)
+         return self.vectorstore, len(texts)
 
-    except Exception as e:
-        logger.error(f"문서 로딩 실패: {e}")
-        st.error(f"❌ 문서 로딩 중 오류가 발생했습니다: {str(e)}")
-        return None, 0
+      except Exception as e:
+          logger.error(f"문서 로딩 실패: {e}")
+          st.error(f"❌ 문서 로딩 중 오류가 발생했습니다: {str(e)}")
+          return None, 0
 
     def create_qa_chain(self, api_key: str) -> bool:
         try:
