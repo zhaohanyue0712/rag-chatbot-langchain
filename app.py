@@ -125,12 +125,12 @@ class RAGChatbot:
              if not all_documents:
                  raise RuntimeError("❌ 업로드된 문서에서 텍스트를 추출하지 못했습니다.")
 
-            text_splitter = RecursiveCharacterTextSplitter(
-                chunk_size=1000,
-                chunk_overlap=200
-            )
-            texts = text_splitter.split_documents(all_documents)
-            self.documents = texts
+             text_splitter = RecursiveCharacterTextSplitter(
+                 chunk_size=1000,
+                 chunk_overlap=200
+             )
+             texts = text_splitter.split_documents(all_documents)
+             self.documents = texts
 
             # 4️⃣ 임베딩 초기화
             if not self.initialize_embeddings():
