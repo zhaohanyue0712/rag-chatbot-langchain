@@ -452,51 +452,55 @@ def main():
         st.markdown("</div>", unsafe_allow_html=True)
     
     # 메인 채팅 인터페이스
-    col1, col2 = st.columns([4, 1])
+col1, col2 = st.columns([4, 1])
+
+with col1:
+    st.markdown('<div class="chat-container">', unsafe_allow_html=True)
     
-    with col1:
-        st.markdown('<div class="chat-container">', unsafe_allow_html=True)
-        
-        # 채팅 히스토리 표시
-        for message in st.session_state.messages:
-            display_chat_message(message["role"], message["content"])
-        
-        # 사용자 입력
-        if prompt := st.chat_input("💬 질문을 입력하세요..."):
-            # 사용자 메시지 추가
-            st.session_state.messages.append({"role": "user", "content": prompt})
-            display_chat_message("user", prompt)
-            
-            # 챗봇 응답 생성
-            if st.session_state.qa_chain_ready:
-                with st.spinner("🤔 답변을 생성하고 있습니다..."):
-                    try:
-                        response = st.session_state.chatbot.query(prompt)
-                        
-                        if "error" in response:
-                            answer = response["error"]
-                        else:
-                            answer = response["answer"]
-                            
-                            # 소스 문서 정보 추가
-                            sources = response.get("source_documents", [])
-                            if sources:
-                                answer += "\n\n📚 **참조 문서:**"
-                                for i, doc in enumerate(sources[:3], 1):
-                                    source_name = doc.metadata.get('source', 'Unknown')
-                                    answer += f"\n{i}. {os.path.basename(source_name)}"
-                        
-                        st.session_state.messages.append({"role": "assistant", "content": answer})
-                        display_chat_message("assistant", answer)
-                        
-                    except Exception as e:
-                        error_msg = f"❌ 답변 생성 중 오류가 발생했습니다: {str(e)}"
-                        st.session_state.messages.append({"role": "assistant", "content": error_msg})
-                        display_chat_message("assistant", error_msg)
-            else:
-                error_msg = "⚠️ 먼저 문서를 업로드하고 OpenAI API 키를 설정해주세요."
+    # 채팅 히스토리 표시
+    for message in st.session_state.messages:
+        display_chat_message(message["role"], message["content"])
+    
+    st.markdown('</div>', unsafe_allow_html=True)
+
+# 🚨 중요: st.chat_input은 container 밖에서 사용해야 함
+prompt = st.chat_input("💬 질문을 입력하세요...")
+
+if prompt:
+    # 사용자 메시지 추가
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    display_chat_message("user", prompt)
+    
+    # 챗봇 응답 생성
+    if st.session_state.qa_chain_ready:
+        with st.spinner("🤔 답변을 생성하고 있습니다..."):
+            try:
+                response = st.session_state.chatbot.query(prompt)
+                
+                if "error" in response:
+                    answer = response["error"]
+                else:
+                    answer = response["answer"]
+                    
+                    # 소스 문서 정보 추가
+                    sources = response.get("source_documents", [])
+                    if sources:
+                        answer += "\n\n📚 **참조 문서:**"
+                        for i, doc in enumerate(sources[:3], 1):
+                            source_name = doc.metadata.get('source', 'Unknown')
+                            answer += f"\n{i}. {os.path.basename(source_name)}"
+                
+                st.session_state.messages.append({"role": "assistant", "content": answer})
+                display_chat_message("assistant", answer)
+                
+            except Exception as e:
+                error_msg = f"❌ 답변 생성 중 오류가 발생했습니다: {str(e)}"
                 st.session_state.messages.append({"role": "assistant", "content": error_msg})
                 display_chat_message("assistant", error_msg)
+    else:
+        error_msg = "⚠️ 먼저 문서를 업로드하고 OpenAI API 키를 설정해주세요."
+        st.session_state.messages.append({"role": "assistant", "content": error_msg})
+        display_chat_message("assistant", error_msg)
         
         st.markdown('</div>', unsafe_allow_html=True)
     
