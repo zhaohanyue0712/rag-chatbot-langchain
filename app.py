@@ -102,9 +102,9 @@ class RAGChatbot:
 
         # 1️⃣ 업로드된 파일을 임시 폴더에 저장
             for uploaded_file in uploaded_files:
-            temp_file_path = os.path.join(temp_dir, uploaded_file.name)
-            with open(temp_file_path, "wb") as f:
-                f.write(uploaded_file.getbuffer())
+                temp_file_path = os.path.join(temp_dir, uploaded_file.name)
+                with open(temp_file_path, "wb") as f:
+                    f.write(uploaded_file.getbuffer())
 
             # 2️⃣ PDF / TXT 로더 (pypdf 폴백)
             try:
