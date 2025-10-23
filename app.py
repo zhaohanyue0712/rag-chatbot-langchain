@@ -95,18 +95,18 @@ class RAGChatbot:
     
     def load_documents(self, uploaded_files: List) -> tuple:
         """문서 로드 및 처리 (Streamlit Cloud 환경 호환 버전)"""
-        try:
-           import pypdf  # PDF 파싱 백업
-           temp_dir = tempfile.mkdtemp()
-           all_documents = []
+    try:
+        import pypdf  # PDF 파싱 백업
+        temp_dir = tempfile.mkdtemp()
+        all_documents = []
 
-        # 1) 업로드 파일을 임시폴더에 저장
+        # 1️⃣ 업로드된 파일을 임시폴더에 저장
         for uploaded_file in uploaded_files:
             temp_file_path = os.path.join(temp_dir, uploaded_file.name)
             with open(temp_file_path, "wb") as f:
                 f.write(uploaded_file.getbuffer())
 
-            # 2) PDF/TXT 로딩 (실패 시 pypdf로 폴백)
+            # 2️⃣ PDF / TXT 로더 (pypdf 예외 처리)
             try:
                 if uploaded_file.name.lower().endswith(".pdf"):
                     loader = PyPDFLoader(temp_file_path)
@@ -121,10 +121,10 @@ class RAGChatbot:
 
             all_documents.extend(docs)
 
+        # 3️⃣ 텍스트 분할
         if not all_documents:
-            raise RuntimeError("❌ 업로드한 문서에서 텍스트를 추출하지 못했습니다.")
+            raise RuntimeError("❌ 업로드된 문서에서 텍스트를 추출하지 못했습니다.")
 
-        # 3) 텍스트 분할
         text_splitter = RecursiveCharacterTextSplitter(
             chunk_size=1000,
             chunk_overlap=200
@@ -132,29 +132,30 @@ class RAGChatbot:
         texts = text_splitter.split_documents(all_documents)
         self.documents = texts
 
-        # 4) 임베딩 준비
+        # 4️⃣ 임베딩 준비
         if not self.initialize_embeddings():
             raise RuntimeError("❌ 임베딩 초기화 실패")
 
-        # 5) Chroma 저장 경로: /tmp (Cloud에서 쓰기 가능)
+        # 5️⃣ Chroma 저장소 생성
         chroma_path = os.path.join(tempfile.gettempdir(), "chroma_db")
         if os.path.exists(chroma_path):
             shutil.rmtree(chroma_path)
         os.makedirs(chroma_path, exist_ok=True)
 
-        # 6) 벡터 스토어 생성
+        # 6️⃣ 벡터스토어 생성
         self.vectorstore = Chroma.from_documents(
             documents=texts,
             embedding=self.embeddings,
-            persist_directory=chroma_path
+            persist_directory=chroma_path,
         )
 
-        # 7) 임시폴더 정리
+        # 7️⃣ 임시파일 정리
         shutil.rmtree(temp_dir, ignore_errors=True)
         return self.vectorstore, len(texts)
 
     except Exception as e:
         logger.error(f"문서 로딩 실패: {e}")
+        st.error(f"❌ 문서 로딩 중 오류가 발생했습니다: {str(e)}")
         return None, 0
     
     def create_qa_chain(self, api_key: str) -> bool:
