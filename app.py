@@ -136,20 +136,20 @@ class RAGChatbot:
             if not self.initialize_embeddings():
               raise RuntimeError("❌ 임베딩 초기화 실패")
 
-         # 5️⃣ Chroma 저장소 경로 생성 (/tmp 사용)
-          chroma_path = os.path.join(tempfile.gettempdir(), "chroma_db")
-          if os.path.exists(chroma_path):
-              shutil.rmtree(chroma_path)
-          os.makedirs(chroma_path, exist_ok=True)
+            # 5️⃣ Chroma 저장소 경로 생성 (/tmp 사용)
+            chroma_path = os.path.join(tempfile.gettempdir(), "chroma_db")
+           if os.path.exists(chroma_path):
+               shutil.rmtree(chroma_path)
+           os.makedirs(chroma_path, exist_ok=True)
 
-         # 6️⃣ 벡터 스토어 생성
-          self.vectorstore = Chroma.from_documents(
-              documents=texts,
-              embedding=self.embeddings,
-              persist_directory=chroma_path
-         )
+           # 6️⃣ 벡터 스토어 생성
+           self.vectorstore = Chroma.from_documents(
+               documents=texts,
+               embedding=self.embeddings,
+               persist_directory=chroma_path
+           )
 
-         # 7️⃣ 임시 폴더 정리
+          # 7️⃣ 임시 폴더 정리
           shutil.rmtree(temp_dir, ignore_errors=True)
 
           return self.vectorstore, len(texts)
