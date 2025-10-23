@@ -1,28 +1,29 @@
-#  ---- LangChain / community / core의 올바른 가져오기 (새 버전) ----
-from langchain_community. document_loaders import PyPDFLoader, TextLoader
-# 만약 당신이 langchain-text-splitters를 설치했다면, 이 줄을 사용하는 것을 추천합니다:
+import streamlit as st
+import os
+import tempfile
+import shutil
+from typing import List, Dict, Any
+import logging
+
+# ---- LangChain / community / core 최신 버전 호환 임포트 ----
+from langchain_community.document_loaders import PyPDFLoader, TextLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-# 싣지 않으셨다면 잠시 오래된 것을 사용하셔도 됩니다(한줄만 유지하시면 됩니다):
-# from langchain. text_splitter import RecursiveCharacterTextSplitter
-
-from langchain_community. embeddings import HuggingFaceEmbeddings
-from langchain_community. vectorstores import Chroma, FAISS
-
+from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_community.vectorstores import Chroma, FAISS
 from langchain_openai import ChatOpenAI
-from langchain_core. documents import Document
-from langchain_core. prompts import PromptTemplate
+from langchain_core.documents import Document
+from langchain_core.prompts import PromptTemplate
+from langchain.chains.retrieval_qa.base import RetrievalQA
 
-# RetrievalQA는 여전히 이전 위치를 사용할 수 있습니다
-from langchain. chains import RetrievalQA
-
-# 기타 라이브러리
+# ---- 기타 라이브러리 ----
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 
-# 로깅 설정
+# ---- 로깅 설정 ----
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
 
 # 페이지 설정
 st.set_page_config(
