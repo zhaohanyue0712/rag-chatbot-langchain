@@ -123,7 +123,7 @@ class RAGChatbot:
 
             # 3️⃣ 텍스트 분할
             if not all_documents:
-            raise RuntimeError("❌ 업로드된 문서에서 텍스트를 추출하지 못했습니다.")
+                raise RuntimeError("❌ 업로드된 문서에서 텍스트를 추출하지 못했습니다.")
 
             text_splitter = RecursiveCharacterTextSplitter(
                 chunk_size=1000,
