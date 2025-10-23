@@ -101,38 +101,38 @@ class RAGChatbot:
             all_documents = []
 
            # 1️⃣ 업로드된 파일을 임시 폴더에 저장
-           for uploaded_file in uploaded_files:
-               temp_file_path = os.path.join(temp_dir, uploaded_file.name)
-               with open(temp_file_path, "wb") as f:
+            for uploaded_file in uploaded_files:
+                temp_file_path = os.path.join(temp_dir, uploaded_file.name)
+                with open(temp_file_path, "wb") as f:
                   f.write(uploaded_file.getbuffer())
 
-             # 2️⃣ PDF / TXT 로더 (pypdf 폴백)
-            try:
-                if uploaded_file.name.lower().endswith(".pdf"):
-                    loader = PyPDFLoader(temp_file_path)
-                    docs = loader.load()
-                else:
-                    loader = TextLoader(temp_file_path, encoding="utf-8")
-                    docs = loader.load()
-            except Exception:
-                reader = pypdf.PdfReader(temp_file_path)
-                text = "\n".join(page.extract_text() or "" for page in reader.pages)
-                docs = [Document(page_content=text, metadata={"source": uploaded_file.name})]
+            # 2️⃣ PDF / TXT 로더 (pypdf 폴백)
+             try:
+                 if uploaded_file.name.lower().endswith(".pdf"):
+                     loader = PyPDFLoader(temp_file_path)
+                     docs = loader.load()
+                 else:
+                     loader = TextLoader(temp_file_path, encoding="utf-8")
+                     docs = loader.load()
+              except Exception:
+                  reader = pypdf.PdfReader(temp_file_path)
+                  text = "\n".join(page.extract_text() or "" for page in reader.pages)
+                  docs = [Document(page_content=text, metadata={"source": uploaded_file.name})]
 
-            all_documents.extend(docs)
+              all_documents.extend(docs)
 
-           # 3️⃣ 텍스트 분할
-           if not all_documents:
-               raise RuntimeError("❌ 업로드된 문서에서 텍스트를 추출하지 못했습니다.")
+            # 3️⃣ 텍스트 분할
+            if not all_documents:
+                raise RuntimeError("❌ 업로드된 문서에서 텍스트를 추출하지 못했습니다.")
 
-           text_splitter = RecursiveCharacterTextSplitter(
-               chunk_size=1000,
-               chunk_overlap=200
-           )
-           texts = text_splitter.split_documents(all_documents)
-           self.documents = texts
+            text_splitter = RecursiveCharacterTextSplitter(
+                chunk_size=1000,
+                chunk_overlap=200
+            )
+            texts = text_splitter.split_documents(all_documents)
+            self.documents = texts
 
-         # 4️⃣ 임베딩 초기화
+            # 4️⃣ 임베딩 초기화
          if not self.initialize_embeddings():
             raise RuntimeError("❌ 임베딩 초기화 실패")
 
