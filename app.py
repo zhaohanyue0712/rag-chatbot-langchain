@@ -1,7 +1,3 @@
-import pypdf  # 备用的PDF解析
-import tempfile
-
-WRITABLE_CHROMA_DIR = os.path.join(tempfile.gettempdir(), "chroma_db")  # ✅ 可写目录（/tmp）
 import streamlit as st
 import os
 import tempfile
