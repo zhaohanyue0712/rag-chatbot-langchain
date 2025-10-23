@@ -142,17 +142,17 @@ class RAGChatbot:
                 shutil.rmtree(chroma_path)
             os.makedirs(chroma_path, exist_ok=True)
 
-           # 6️⃣ 벡터 스토어 생성
-           self.vectorstore = Chroma.from_documents(
-               documents=texts,
-               embedding=self.embeddings,
-               persist_directory=chroma_path
-           )
+            # 6️⃣ 벡터 스토어 생성
+            self.vectorstore = Chroma.from_documents(
+                documents=texts,
+                embedding=self.embeddings,
+                persist_directory=chroma_path
+            )
 
-          # 7️⃣ 임시 폴더 정리
-          shutil.rmtree(temp_dir, ignore_errors=True)
+            # 7️⃣ 임시 폴더 정리
+            shutil.rmtree(temp_dir, ignore_errors=True)
 
-          return self.vectorstore, len(texts)
+            return self.vectorstore, len(texts)
 
   except Exception as e:
           logger.error(f"문서 로딩 실패: {e}")
