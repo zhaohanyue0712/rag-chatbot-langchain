@@ -153,11 +153,11 @@ class RAGChatbot:
             shutil.rmtree(temp_dir, ignore_errors=True)
 
             return self.vectorstore, len(texts)
-
-  except Exception as e:
-          logger.error(f"문서 로딩 실패: {e}")
-          st.error(f"❌ 문서 로딩 중 오류가 발생했습니다: {str(e)}")
-          return None, 0
+        
+        except Exception as e:
+            logger.error(f"문서 로딩 실패: {e}")
+            st.error(f"❌ 문서 로딩 중 오류가 발생했습니다: {str(e)}")
+            return None, 0
 
     def create_qa_chain(self, api_key: str) -> bool:
         try:
