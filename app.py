@@ -107,7 +107,7 @@ class RAGChatbot:
                   f.write(uploaded_file.getbuffer())
 
             # 2️⃣ PDF / TXT 로더 (pypdf 폴백)
-            try:
+              try:
                   if uploaded_file.name.lower().endswith(".pdf"):
                      loader = PyPDFLoader(temp_file_path)
                      docs = loader.load()
@@ -154,7 +154,7 @@ class RAGChatbot:
 
           return self.vectorstore, len(texts)
 
-       except Exception as e:
+  except Exception as e:
           logger.error(f"문서 로딩 실패: {e}")
           st.error(f"❌ 문서 로딩 중 오류가 발생했습니다: {str(e)}")
           return None, 0
