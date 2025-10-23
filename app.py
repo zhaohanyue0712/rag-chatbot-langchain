@@ -94,7 +94,7 @@ class RAGChatbot:
             return False
     
     def load_documents(self, uploaded_files: List) -> tuple:
-    """문서 로드 및 처리 (Streamlit Cloud 환경 호환 버전)"""
+        """문서 로드 및 처리 (Streamlit Cloud 환경 호환 버전)"""
     try:
         import pypdf  # PDF 파싱 백업
         temp_dir = tempfile.mkdtemp()
