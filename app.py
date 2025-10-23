@@ -121,7 +121,7 @@ class RAGChatbot:
 
             all_documents.extend(docs)
 
-        # 3️⃣ 텍스트 분할
+              # 3️⃣ 텍스트 분할
         if not all_documents:
             raise RuntimeError("❌ 업로드된 문서에서 텍스트를 추출하지 못했습니다.")
 
